@@ -23,7 +23,11 @@ async function getMetrics() {
       total: mem.total,
       used: mem.used,
       free: mem.free,
-      usagePercent: Math.round((mem.used / mem.total) * 1000) / 10,
+      available: mem.available,
+      buffcache: mem.buffcache,
+      // usagePercent based on unavailable memory (total - available) so it reflects
+      // what Linux actually can't reclaim, not the inflated used+cache figure
+      usagePercent: Math.round(((mem.total - mem.available) / mem.total) * 1000) / 10,
     },
     disk: {
       total: primaryDisk.size || 0,

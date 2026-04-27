@@ -269,7 +269,7 @@ function updateMetrics(system) {
     setText('ram-usage',  `${memory.usagePercent}%`);
     setText('ram-total',  formatBytes(memory.total));
     setBar('ram-bar', memory.usagePercent);
-    setText('ram-detail', `${formatBytes(memory.used)} / ${formatBytes(memory.total)} used`);
+    setText('ram-detail', `${formatBytes(memory.available)} available of ${formatBytes(memory.total)}`);
   }
 
   if (disk) {
