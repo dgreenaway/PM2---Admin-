@@ -7,7 +7,8 @@ const router = express.Router();
 
 router.get('/login', (req, res) => {
   if (req.session.authenticated) return res.redirect('/');
-  res.render('login', { title: 'Login — VPS Admin' });
+  const extraError = req.query.err === 'session' ? 'Session error, please try again' : null;
+  res.render('login', { title: 'Login — VPS Admin', extraError });
 });
 
 router.post('/login', loginLimiter, async (req, res) => {
@@ -29,13 +30,16 @@ router.post('/login', loginLimiter, async (req, res) => {
 
   req.session.regenerate((err) => {
     if (err) {
-      req.flash('error', 'Session error, please try again');
-      return res.redirect('/login');
+      // regenerate destroys the old session so flash won't survive — pass error via query
+      return res.redirect('/login?err=session');
     }
     req.session.authenticated = true;
     req.session.username = config.admin.username;
     req.session.loginTime = new Date().toISOString();
-    res.redirect('/');
+    req.session.save((saveErr) => {
+      if (saveErr) return res.redirect('/login?err=session');
+      res.redirect('/');
+    });
   });
 });
 

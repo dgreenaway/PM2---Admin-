@@ -20,7 +20,9 @@
         <p>Server Dashboard</p>
       </div>
 
-      <% if (error && error.length) { %>
+      <% if (extraError) { %>
+        <div class="alert alert-error"><%= extraError %></div>
+      <% } else if (error && error.length) { %>
         <div class="alert alert-error"><%= error[0] %></div>
       <% } %>
       <% if (success && success.length) { %>

@@ -21,6 +21,12 @@ const io = new Server(server, {
   transports: ['websocket', 'polling'],
 });
 
+// Trust the first proxy (Nginx) so Express sees HTTPS correctly via X-Forwarded-Proto
+// Required for secure session cookies to work behind a reverse proxy
+if (config.env === 'production') {
+  app.set('trust proxy', 1);
+}
+
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
