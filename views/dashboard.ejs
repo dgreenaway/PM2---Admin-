@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- ─── Header ──────────────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-brand">
+    <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="2" y="3" width="20" height="14" rx="2"/>
+      <path d="M8 21h8M12 17v4"/>
+    </svg>
+    <span class="header-title">VPS Admin</span>
+  </div>
+  <div class="header-meta">
+    <span id="connection-status" class="badge badge-warning">Connecting</span>
+    <span class="header-hostname"><%= hostname %></span>
+    <span id="header-time" class="header-time"></span>
+  </div>
+  <div class="header-right">
+    <span class="header-user"><%- username %></span>
+    <form method="POST" action="/logout">
+      <button type="submit" class="btn btn-ghost btn-sm">Sign Out</button>
+    </form>
+  </div>
+</header>
+
+<!-- ─── Main ─────────────────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- Metrics Grid -->
+  <section class="metrics-grid">
+
+    <div class="metric-card" id="card-cpu">
+      <div class="metric-header">
+        <span class="metric-label">CPU Usage</span>
+        <span class="metric-sub" id="cpu-cores">— cores</span>
+      </div>
+      <div class="metric-value" id="cpu-usage">—%</div>
+      <div class="progress-bar"><div class="progress-fill" id="cpu-bar" style="width:0%"></div></div>
+      <div class="metric-footer" id="cpu-load">Load: — — —</div>
+    </div>
+
+    <div class="metric-card" id="card-ram">
+      <div class="metric-header">
+        <span class="metric-label">Memory</span>
+        <span class="metric-sub" id="ram-total">—</span>
+      </div>
+      <div class="metric-value" id="ram-usage">—%</div>
+      <div class="progress-bar"><div class="progress-fill" id="ram-bar" style="width:0%"></div></div>
+      <div class="metric-footer" id="ram-detail">— / — used</div>
+    </div>
+
+    <div class="metric-card" id="card-disk">
+      <div class="metric-header">
+        <span class="metric-label">Disk</span>
+        <span class="metric-sub" id="disk-mount">/</span>
+      </div>
+      <div class="metric-value" id="disk-usage">—%</div>
+      <div class="progress-bar"><div class="progress-fill" id="disk-bar" style="width:0%"></div></div>
+      <div class="metric-footer" id="disk-detail">— / — used</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">Uptime</span>
+      </div>
+      <div class="metric-value metric-value--md" id="uptime">—</div>
+      <div class="metric-footer" id="uptime-hostname"><%- hostname %></div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-header">
+        <span class="metric-label">Load Average</span>
+      </div>
+      <div class="load-grid">
+        <div class="load-item"><span class="load-period">1m</span><span class="load-val" id="load-1">—</span></div>
+        <div class="load-item"><span class="load-period">5m</span><span class="load-val" id="load-5">—</span></div>
+        <div class="load-item"><span class="load-period">15m</span><span class="load-val" id="load-15">—</span></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- System Info -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">System Information</h2>
+    </div>
+    <div class="info-grid">
+      <div class="info-item"><span class="info-label">Hostname</span><span class="info-val" id="info-hostname">—</span></div>
+      <div class="info-item"><span class="info-label">Operating System</span><span class="info-val" id="info-os">—</span></div>
+      <div class="info-item"><span class="info-label">Kernel</span><span class="info-val" id="info-kernel">—</span></div>
+      <div class="info-item"><span class="info-label">Architecture</span><span class="info-val" id="info-arch">—</span></div>
+      <div class="info-item"><span class="info-label">Node.js</span><span class="info-val" id="info-node">—</span></div>
+      <div class="info-item"><span class="info-label">Server Time</span><span class="info-val" id="info-time">—</span></div>
+    </div>
+  </section>
+
+  <!-- PM2 Processes -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">PM2 Processes</h2>
+      <div class="section-actions">
+        <button id="btn-restart-all" class="btn btn-warning btn-sm">Restart All</button>
+      </div>
+    </div>
+    <div id="pm2-container">
+      <div class="loading-state"><span class="spinner"></span> Loading processes…</div>
+    </div>
+  </section>
+
+  <!-- Docker Containers (hidden until available) -->
+  <section class="section" id="docker-section" style="display:none">
+    <div class="section-header">
+      <h2 class="section-title">Docker Containers</h2>
+      <span id="docker-badge" class="badge badge-neutral">—</span>
+    </div>
+    <div id="docker-container">
+      <div class="loading-state">Loading containers…</div>
+    </div>
+  </section>
+
+  <!-- Activity Log -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">Activity Log</h2>
+      <button class="btn btn-ghost btn-sm" id="btn-toggle-log">Hide</button>
+    </div>
+    <div id="activity-log">
+      <div class="empty-state">No activity yet.</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ─── Logs Modal ────────────────────────────────────────────────────────── -->
+<div id="logs-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-overlay" data-close="logs-modal"></div>
+  <div class="modal-box modal-box--lg">
+    <div class="modal-head">
+      <h3 id="logs-modal-title">Process Logs</h3>
+      <button class="modal-close" data-close="logs-modal" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <pre id="logs-output" class="logs-output">Loading…</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Confirm Modal ─────────────────────────────────────────────────────── -->
+<div id="confirm-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-overlay" data-close="confirm-modal"></div>
+  <div class="modal-box modal-box--sm">
+    <div class="modal-head">
+      <h3 id="confirm-title">Confirm</h3>
+    </div>
+    <div class="modal-body">
+      <p id="confirm-message"></p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close="confirm-modal">Cancel</button>
+      <button id="confirm-ok" class="btn btn-danger">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Toast Container ───────────────────────────────────────────────────── -->
+<div id="toasts" aria-live="polite"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+# Ensure consistent LF line endings on all platforms (VPS runs Linux)
+* text=auto eol=lf
+*.bat text eol=crlf

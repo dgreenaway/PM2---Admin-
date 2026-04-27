@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="login-page">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-brand">
+        <svg class="login-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <path d="M8 21h8M12 17v4"/>
+          <circle cx="12" cy="10" r="2"/>
+          <path d="M12 8V7M12 13v1M9 10H8M16 10h-1M9.76 8.26l-.71-.71M15.66 14.44l-.7-.7M9.76 11.74l-.71.71M15.66 5.56l-.7.7"/>
+        </svg>
+        <h1>VPS Admin</h1>
+        <p>Server Dashboard</p>
+      </div>
+
+      <% if (error && error.length) { %>
+        <div class="alert alert-error"><%= error[0] %></div>
+      <% } %>
+      <% if (success && success.length) { %>
+        <div class="alert alert-success"><%= success[0] %></div>
+      <% } %>
+
+      <form method="POST" action="/login" autocomplete="on">
+        <div class="field">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            autocomplete="username"
+            placeholder="admin"
+            spellcheck="false"
+          >
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            autocomplete="current-password"
+            placeholder="••••••••"
+          >
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
